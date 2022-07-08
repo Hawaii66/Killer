@@ -20,3 +20,19 @@ export interface User {
     password:string,
     type:KillerType
 }
+
+export const DefaultUser:User = {
+    alive:false,
+    class:"",
+    email:"",
+    forename:"",
+    hitman:"",
+    id:"",
+    kills:-1,
+    lastname:"",
+    password:"",
+    phone:"",
+    target:"",
+    type:KillerType.Normal,
+    year:0,
+}

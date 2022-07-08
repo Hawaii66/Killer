@@ -1,6 +1,8 @@
 import cors = require("cors");
 import express = require("express");
-import { Routes } from "./Routes/Routes";
+import Routes from "./Routes/AdminRoutes";
+import AuthRoutes from "./Routes/AuthRoutes";
+import UserRoutes from "./Routes/UserRoutes";
 require("dotenv").config();
 
 const app = express();
@@ -8,8 +10,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
+app.use(express.json());
 
-Routes(app);
+app.use("/admin", Routes);
+app.use("/auth", AuthRoutes);
+app.use("/users", UserRoutes);
+
+app.get("/",(_,res)=>{
+    res.send("Server online");
+});
 
 app.listen(PORT, ()=>{
     console.log("Server listening on: http://localhost:" + PORT);

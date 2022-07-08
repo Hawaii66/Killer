@@ -72,6 +72,8 @@ export const RegisterUser:RegisterUserType = async (user) => {
 export const UpdateUserCircle:UpdateUserCircleType = async (users) => {
     const ops: BulkWriteOperationType[] =[];
 
+    if(users.length === 0){return;}
+
     users.forEach(user => {
         ops.push({
             updateOne:{

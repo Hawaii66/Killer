@@ -16,14 +16,14 @@ export interface User {
     kills:number,
     id:string,
     year:number,
-    class:string,
+    group:string,
     password:string,
     type:KillerType
 }
 
 export const DefaultUser:User = {
     alive:false,
-    class:"",
+    group:"",
     email:"",
     forename:"",
     hitman:"",

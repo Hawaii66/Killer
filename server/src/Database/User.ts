@@ -51,7 +51,7 @@ export const GetUser:GetUserType = async (key:string, access:AccessType) => {
 export const RegisterUser:RegisterUserType = async (user) => {
     const writeUser:User = {
         alive:false,
-        class:user.class,
+        group:user.group,
         email:user.email,
         forename:user.forename,
         hitman:"",
@@ -105,7 +105,7 @@ export const AddRandomUser:AddRandomUserType = async () => {
 
     const user:User = {
         alive:true,
-        class:"Na21B",
+        group:"Na21B",
         email:randomEmail,
         forename:randomName.split(" ")[0],
         hitman:"",

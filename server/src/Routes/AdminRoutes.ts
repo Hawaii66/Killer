@@ -34,7 +34,7 @@ router.get("/circle/reset", async (req:Request, res:Response) => {
 router.post("/users/random", async (req:Request, res:Response) => {
     const user = await CreateUser({
         alive:false,
-        class:"Na21B",
+        group:"Na21B",
         email:faker.internet.email(),
         forename:faker.name.firstName(),
         hitman:"",

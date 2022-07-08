@@ -86,7 +86,7 @@ export const CreateUser = async (reqBody:User) => {
 
     const registeredUser = await RegisterUser({
         alive:false,
-        class:reqBody.class,
+        group:reqBody.group,
         email:user.email,
         forename:reqBody.forename,
         hitman:"",

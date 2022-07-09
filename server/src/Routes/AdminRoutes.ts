@@ -6,6 +6,7 @@ import { AdminAuth, AdminRequest } from "../Middelware/AdminAuth";
 import { GenerateCircle } from "../Functions/GenerateCircle";
 import { CreateUser } from "./AuthRoutes";
 import { faker } from "@faker-js/faker";
+import { ChangeStartTime } from "../Database/Config";
 
 const express = require("express");
 
@@ -50,5 +51,13 @@ router.post("/users/random", async (req:Request, res:Response) => {
 
     res.json(user);
 });
+
+router.post("/config/time", async (req:Request, res:Response) => {
+    const time = req.body.time;
+
+    await ChangeStartTime(time);
+
+    res.send("Time successfully updated to: " + time);
+})
 
 export default router;

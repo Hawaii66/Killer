@@ -3,6 +3,7 @@ import express = require("express");
 import Routes from "./Routes/AdminRoutes";
 import AuthRoutes from "./Routes/AuthRoutes";
 import UserRoutes from "./Routes/UserRoutes";
+import DefaultRoutes from "./Routes/DefaultRoutes";
 require("dotenv").config();
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/admin", Routes);
 app.use("/auth", AuthRoutes);
 app.use("/users", UserRoutes);
+app.use("/default", DefaultRoutes);
 
 app.get("/",(_,res)=>{
     res.send("Server online");

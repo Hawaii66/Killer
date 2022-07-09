@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ThemeProvider } from '@emotion/react';
+import React, { useState } from 'react';
+
+import "./app.css";
+import { UserContext } from './Contexts/UserContext';
+import { User, DefaultUser } from './Interfaces/User';
+import RouteWrapper from './Routes/RouteWrapper';
+import { theme } from './ThemeProvider';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [user,_setUser] = useState<User>(DefaultUser);
+
+	const setUser = (user:User) => _setUser(user);
+
+	return (
+		<ThemeProvider theme={theme}>
+			<UserContext.Provider value={{
+				setUser,
+				user
+			}}>
+				<RouteWrapper />
+			</UserContext.Provider>
+		</ThemeProvider>
+	);
 }
 
 export default App;

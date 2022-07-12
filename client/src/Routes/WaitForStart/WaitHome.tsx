@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../Contexts/UserContext';
 import { useDeadline } from '../../Hooks/useDeadline';
 import { useGet } from '../../Hooks/useFetch';
+import { State } from '../WiatForStart';
 import UserInfo from './UserInfo';
 
 const btn:SxProps = {
@@ -40,7 +41,11 @@ const avatarText:SxProps = {
 	fontWeight:700
 }
 
-function LoginHome() {
+interface Props {
+	setState:(s:State) => void
+}
+
+function WaitHome({setState}:Props) {
 	const [deadline,setDeadline] = useState("");
 	const [show,setShow] = useState(false);
 	const time = useDeadline(deadline);
@@ -77,8 +82,8 @@ function LoginHome() {
 			<Typography sx={header} align="center" color="primary" variant="h1">Killer</Typography>
 			<Typography sx={timer} align="center" color="secondary" variant="h5">{loading || isNullDate  ? <Skeleton width={"18rem"} height={"2rem"} /> : `Startar om: ${getDate()}`}</Typography>
 			{user.id === "" && <>
-				<Button sx={wideBtn} variant="contained" color="primary">SKAPA KONTO</Button>
-				<Button sx={btn} variant="contained" color="primary">LOGGA IN</Button>
+				<Button sx={wideBtn} variant="contained" color="primary" onClick={()=>setState(State.Signup)}>SKAPA KONTO</Button>
+				<Button sx={btn} variant="contained" color="primary" onClick={()=>setState(State.Login)}>LOGGA IN</Button>
 			</>}
 
 			<UserInfo show={show} setShow={(s)=>setShow(s)}/>
@@ -86,4 +91,4 @@ function LoginHome() {
 	)
 }
 
-export default LoginHome
+export default WaitHome

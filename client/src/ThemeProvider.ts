@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material";
+import { blue, orange, red } from "@mui/material/colors";
 
 export const theme = createTheme({
     palette:{
@@ -7,6 +8,9 @@ export const theme = createTheme({
         },
         secondary:{
             main:"#CB3B3B"
+        },
+        error:{
+            main:red[900]
         }
     },
     typography:{
@@ -14,7 +18,11 @@ export const theme = createTheme({
             fontWeight:600
         },
         h5:{
-            fontWeight:500
+            fontWeight:500,
+
+        },
+        body2:{
+            fontSize:"1.2rem"
         }
     }
 });

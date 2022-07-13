@@ -9,6 +9,7 @@ import { faker } from "@faker-js/faker";
 import { ChangeStartTime } from "../Database/Config";
 
 const express = require("express");
+var csv = require('csv-express')
 
 const router = express.Router();
 
@@ -28,8 +29,12 @@ router.get("/circle/reset", async (req:Request, res:Response) => {
     
     users = GenerateCircle(users);
 
+    const returnData:string[] = users.map(user=>{
+        return user.forename + " " + user.lastname + " - " + user.group;
+    })
+
     await UpdateUserCircle(users);
-    res.json(users);
+    res.json(returnData);
 });
 
 router.post("/users/random", async (req:Request, res:Response) => {

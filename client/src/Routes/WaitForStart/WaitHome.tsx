@@ -1,5 +1,6 @@
 import { Avatar, Button, IconButton, Skeleton, SxProps, Typography } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../Contexts/UserContext';
 import { useDeadline } from '../../Hooks/useDeadline';
 import { useGet } from '../../Hooks/useFetch';
@@ -53,11 +54,18 @@ function WaitHome({setState}:Props) {
 	const {user} = useContext(UserContext);
 
 	const [data, loading, refresh] = useGet<{time:string}>({path:"/default/deadline",start:false});
-	
+	const navigate = useNavigate();
+
 	useEffect(()=>refresh(),[]);
 
 	useEffect(()=>{
-		console.log(data);
+		if(parseInt(time.days) < 0)
+		{
+			navigate("/",{replace:true});
+		}
+	},[time])
+
+	useEffect(()=>{
 		if(data === undefined) return;
 
 		if(data.time !== undefined) setDeadline(data.time);
@@ -82,7 +90,7 @@ function WaitHome({setState}:Props) {
 			<Typography sx={header} align="center" color="primary" variant="h1">Killer</Typography>
 			<Typography sx={timer} align="center" color="secondary" variant="h5">{loading || isNullDate  ? <Skeleton width={"18rem"} height={"2rem"} /> : `Startar om: ${getDate()}`}</Typography>
 			{user.id === "" && <>
-				<Button sx={wideBtn} variant="contained" color="primary" onClick={()=>setState(State.Signup)}>SKAPA KONTO</Button>
+				{parseInt(time.days) > 0 && <Button sx={wideBtn} variant="contained" color="primary" onClick={()=>setState(State.Signup)}>SKAPA KONTO</Button>}
 				<Button sx={btn} variant="contained" color="primary" onClick={()=>setState(State.Login)}>LOGGA IN</Button>
 			</>}
 

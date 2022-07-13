@@ -1,12 +1,12 @@
 import { Response } from "express";
 import { AccessType, GetUser } from "../Database/User";
-import { AuthedRequest, AuthUser } from "../Functions/AuthUser";
+import { AuthedRequest, AuthUser, AuthUserIDParam } from "../Functions/AuthUser";
 
 
 const express = require("express");
 const router = express.Router();
 
-router.get("/:id/all",AuthUser, async (req:AuthedRequest,res:Response)=>{
+router.get("/:id/all",AuthUserIDParam, async (req:AuthedRequest,res:Response)=>{
     if(req.userID !== req.params.id) return res.sendStatus(400);
 
     const dbUser = await GetUser(req.userID, AccessType.ID);

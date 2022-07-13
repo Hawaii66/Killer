@@ -6,6 +6,7 @@ import TimeoutAlert from '../../../Components/TimeoutAlert'
 import { UserContext } from '../../../Contexts/UserContext'
 import { usePost } from '../../../Hooks/useFetch'
 import { KillerType, User } from '../../../Interfaces/User'
+import { SignUpUser } from '../../../Utils/UserAuth'
 import { State } from '../../WiatForStart'
 import StyledTextField from '../StyledTextField'
 
@@ -123,7 +124,7 @@ function Signup({setState}:Props) {
 
 	const [signState,setSignState] = useState(SignState.First);
 
-	const {setUser} = useContext(UserContext);
+	const {setUser, setRefreshToken, setAccessToken} = useContext(UserContext);
 
 	const error = (state:SignState) => {
 		setShowError(true);
@@ -141,7 +142,7 @@ function Signup({setState}:Props) {
 
 		setSignState(SignState.Loading);
 
-		const response = await fetch("http://localhost:5000/auth/create",{
+		/*const response = await fetch("http://localhost:5000/auth/create",{
 			method:"POST",
 			headers:{
 				"Content-Type":"application/json"
@@ -159,9 +160,22 @@ function Signup({setState}:Props) {
 		});
 		console.log(response);
 
-		if(response.status !== 200){error(SignState.First);return;}
+		if(response.status !== 200){error(SignState.First);return;}*/
 
-		setUser(await response.json());
+		const {user, refreshToken, accessToken} = await SignUpUser({
+			email,
+			forename,
+			lastname,
+			password:password[0],
+			phone,
+			type:KillerTypeToNumber(playerType),
+			year:GetYearFromClass(selectedClass),
+			group:selectedClass
+		});
+
+		setUser(user);
+		setRefreshToken(refreshToken);
+		setAccessToken(accessToken);
 		setState(State.Wait);
 	}
 
@@ -203,6 +217,12 @@ function Signup({setState}:Props) {
 						select
 						onChange={(e)=>setClass(e.target.value)}
 						InputLabelProps={{shrink:true}}
+						InputProps={{sx:{color:"#ecf0f1"}}}
+						sx={{width:"60%","& .MuiInputLabel-root": {color: '#ecf0f1'},//styles the label
+							"& .MuiOutlinedInput-root": {
+								"& > fieldset": { borderColor: "#ecf0f1" },
+								"& .MuiSvgIcon-root": { color: "#ecf0f1" },
+						}}}
 					>
 						{selectClasses.map((item,index)=>{
 							return (
@@ -211,6 +231,7 @@ function Signup({setState}:Props) {
 								</MenuItem>
 							)
 						})}
+						
 					</TextField>
 				</Container>
 				<Container sx={classes.center}>
@@ -268,7 +289,7 @@ function Signup({setState}:Props) {
 				<Typography sx={classes.title} variant="h1" color="primary" align="center">Killer</Typography>
 				<Container sx={classes.margin}>
 					<StyledTextField 
-						text={getStars(password[0])}
+						text={password[0]}
 						setText={s=>setPassword(old=>[s,old[1]])}
 						placeHolder=""
 						helper=""
@@ -276,7 +297,7 @@ function Signup({setState}:Props) {
 					/>
 					<StyledTextField
 						error={password[0] !== password[1]}
-						text={getStars(password[1])}
+						text={password[1]}
 						setText={s=>setPassword(old =>[old[0],s])}
 						placeHolder=""
 						helper={password[0] === password[1] ? "" : "Lösenord stämmer inte överens"}
@@ -288,10 +309,10 @@ function Signup({setState}:Props) {
 							value={KillerTypeToNumber(playerType)}
 							onChange={(e)=>setPlayerType(NumberToKillerType(parseInt(e.target.value)))}
 						>
-							<FormControlLabel value={0} control={<Radio />} label={"Normal - Med för att det är roligt"} />
-							<FormControlLabel value={1} control={<Radio />} label={"Hardcore - All in på att döda"} />
-							<FormControlLabel value={2} control={<Radio />} label={"Camper - All in på att överleva"} />
-							<FormControlLabel value={3} control={<Radio />} label={"Osynlic - Osynlig - Gör inget"} />
+							<FormControlLabel value={0} control={<Radio />} label={"Normal - Med för att det är roligt"} componentsProps={{typography:{color:"#ecf0f1"}}}/>
+							<FormControlLabel value={1} control={<Radio />} label={"Hardcore - All in på att döda"} componentsProps={{typography:{color:"#ecf0f1"}}}/>
+							<FormControlLabel value={2} control={<Radio />} label={"Camper - All in på att överleva"} componentsProps={{typography:{color:"#ecf0f1"}}}/>
+							<FormControlLabel value={3} control={<Radio />} label={"Osynlic - Osynlig - Gör inget"} componentsProps={{typography:{color:"#ecf0f1"}}}/>
 						</RadioGroup>
 					</FormControl>
 				</Container>

@@ -27,7 +27,21 @@ function StyledTextField({text,setText,placeHolder, helper,label, disabled,error
 				required
 				helperText={helper}
 				InputLabelProps={{shrink:true}}
-				sx={{width:"85%"}}
+				sx={{
+					width:"85%",
+					"& .MuiInputLabel-root": {
+						color: '#ecf0f1'
+					},//styles the label
+					"& .MuiOutlinedInput-root": {
+						"& > fieldset": { borderColor: "#ecf0f1" },
+					},
+					"&": {
+						"& > p":{
+							color:"#ecf0f1"
+						}
+					}
+				}}
+				InputProps={{sx:{color:"#ecf0f1"}}}
 			/>
 		</>
 	)

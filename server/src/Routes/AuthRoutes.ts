@@ -43,7 +43,7 @@ router.post("/login", async (req:Request,res:Response)=>{
     };
 
     const dbUser = await GetUser(user.email, AccessType.EMAIL);
-    if(dbUser.id === "") return res.sendStatus(400);
+    if(dbUser.id === "") return res.status(400).send("No user found with that email");
 
     if(await bcrypt.compare(user.password, dbUser.password))
     {
@@ -57,7 +57,8 @@ router.post("/login", async (req:Request,res:Response)=>{
 
         return res.status(200).json({
             accessToken,
-            refreshToken
+            refreshToken,
+            id:dbUser.id
         });
     }
 
@@ -66,7 +67,7 @@ router.post("/login", async (req:Request,res:Response)=>{
 
 const generateToken = (data:UserSmall) => {
     const token = process.env.JWT_ACCESS_TOKEN || "";
-    return jwt.sign(data, token, {expiresIn: 15});
+    return jwt.sign(data, token, {expiresIn: 120});
 }
 
 router.post("/create", async (req:Request,res:Response)=>{

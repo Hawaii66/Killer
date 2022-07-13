@@ -12,11 +12,26 @@ export enum AccessType {
     EMAIL,
     ID
 }
-type BulkWriteOperationType = {
+export type BulkWriteOperationType = {
     updateOne:{
         filter:{
             id:string
         },
+        update:{
+            $set:{
+                target:string,
+                hitman:string,
+                alive:true,
+                kills:number
+            }
+        },
+        upsert:boolean
+    }
+}
+
+export type BulkWriteOperationTypeExtra<T> = {
+    updateOne:{
+        filter:T,
         update:{
             $set:{
                 target:string,
@@ -92,6 +107,11 @@ export const UpdateUserCircle:UpdateUserCircleType = async (users) => {
     });
 
     userDB.bulkWrite(ops, {ordered:false});
+}
+
+export async function ExecuteOps<T>(ops:BulkWriteOperationTypeExtra<T>[])
+{
+    await userDB.bulkWrite(ops, {ordered:false})
 }
 
 export const GetAllUsers:GetAllUsersType = async () => {

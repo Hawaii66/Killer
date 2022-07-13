@@ -1,5 +1,5 @@
 import {Express, Response, Request, response} from "express";
-import { AddRandomUser, GetAllUsers, UpdateUserCircle } from "../Database/User";
+import { AddRandomUser, BulkWriteOperationType, BulkWriteOperationTypeExtra, ExecuteOps, GetAllUsers, UpdateUserCircle } from "../Database/User";
 import { KillerType, User } from "../../../Shared/User";
 import { GetPath } from "../Functions/GetPath";
 import { AdminAuth, AdminRequest } from "../Middelware/AdminAuth";
@@ -30,11 +30,65 @@ router.get("/circle/reset", async (req:Request, res:Response) => {
     users = GenerateCircle(users);
 
     const returnData:string[] = users.map(user=>{
-        return user.forename + " " + user.lastname + " - " + user.group;
+        return user.forename + " " + user.lastname + " " + user.group + " " + user.id;
     })
 
-    await UpdateUserCircle(users);
     res.json(returnData);
+});
+
+interface CircleUser
+{
+    forename:string,
+    lastname:string,
+    group:string,
+    userid:string
+}
+router.post("/circle/set", async(req:Request, res:Response) => {
+    var dataName:string[] = req.body;
+
+    const userdata:CircleUser[] = dataName.map(user=>{
+        return({
+            forename:user.split(" ")[0],
+            lastname:user.split(" ")[1],
+            group:user.split(" ")[2],
+            userid:user.split(" ")[3]
+        });
+    });
+
+    console.log(userdata);
+    const ops: BulkWriteOperationTypeExtra<{forename:string,lastname:string,group:string}>[] =[];
+    
+    var previousUser:CircleUser = userdata[userdata.length - 1];
+    var nextUser:CircleUser = userdata[1];
+    for(var i = 0; i < userdata.length; i ++)
+    {
+        nextUser = userdata[i === userdata.length - 1 ? 0 : i + 1];
+
+        ops.push({
+            updateOne:{
+                filter:{
+                    forename:userdata[i].forename,
+                    group:userdata[i].group,
+                    lastname:userdata[i].lastname
+                },
+                update:{
+                    $set:{
+                        alive:true,
+                        hitman:previousUser.userid,
+                        kills:0,
+                        target:nextUser.userid
+                    }
+                },
+                upsert:false
+            }
+        });
+
+        previousUser = userdata[i];
+    }
+
+    await ExecuteOps(ops);
+
+    res.json(ops);
 });
 
 router.post("/users/random", async (req:Request, res:Response) => {

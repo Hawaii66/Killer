@@ -1,5 +1,5 @@
 import {Express, Response, Request, response} from "express";
-import { AddRandomUser, BulkWriteOperationType, BulkWriteOperationTypeExtra, ExecuteOps, GetAllUsers, UpdateUserCircle } from "../Database/User";
+import { AddRandomUser, BulkWriteOperationType, BulkWriteOperationTypeExtra, ExecuteOps, GetAllUsers, GetUser, UpdateUserCircle } from "../Database/User";
 import { KillerType, User } from "../../../Shared/User";
 import { GetPath } from "../Functions/GetPath";
 import { AdminAuth, AdminRequest } from "../Middelware/AdminAuth";

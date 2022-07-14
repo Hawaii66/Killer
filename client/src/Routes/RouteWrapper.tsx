@@ -2,13 +2,18 @@ import { CircularProgress, Container, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter, Link, Route, Routes, useNavigate } from 'react-router-dom'
 import { useDeadline } from '../Hooks/useDeadline';
-import Home from './Home'
+import Home, { HomeRoutes } from './Home'
+import Rules from './Home/Rules/Rules';
+import Settings from './Home/Settings/Settings';
+import Login from './WaitForStart/Login/Login';
 import WiatForStart from './WiatForStart'
 
 function RouteWrapper() {
-	const [startDate, setStartDate] = useState("");
+	const [mode,_setMode] = useState(HomeRoutes.Home);
 	const [loading ,setLoading] = useState(true);
 	const navigate = useNavigate();
+
+	const setMode = (mode:HomeRoutes) => _setMode(mode);
 
 	const fetchDeadline = async () => {
 		const result = await fetch("http://localhost:5000/default/deadline",{
@@ -45,9 +50,14 @@ function RouteWrapper() {
 
 	return (
 		<Routes>
-			<Route path="/" element={<Home />}/>
 			<Route path="/wait" element={<WiatForStart/>} />
-			<Route path="*" element={<Link to={"/"}/>} />
+			<Route path="/login" element={<Login setState={(_)=>{navigate("/")}}/>} />
+			<Route path="/" element={<Home mode={mode} setMode={setMode}/>}/>
+			<Route path="/home/settings" element={<Settings />}/>
+			<Route path="/home/stats" element={<div>Sttas</div>}/>
+			<Route path="/home/rules" element={<Rules />}/>
+			<Route path="/home/*" element={<Home mode={mode} setMode={setMode}/>}/>
+			<Route path="*" element={<Home mode={mode} setMode={setMode}/>} />
 		</Routes>	
 	)
 }

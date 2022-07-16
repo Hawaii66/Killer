@@ -18,7 +18,8 @@ export interface User {
     year:number,
     group:string,
     password:string,
-    type:KillerType
+    type:KillerType,
+    pin:string
 }
 
 export const DefaultUser:User = {
@@ -35,4 +36,5 @@ export const DefaultUser:User = {
     target:"",
     type:KillerType.Normal,
     year:0,
+    pin:"0000"
 }

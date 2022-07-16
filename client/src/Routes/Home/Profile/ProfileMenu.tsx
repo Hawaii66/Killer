@@ -77,6 +77,8 @@ interface Props{
 
 function ProfileMenu({show,setShow}:Props)
 {
+	const {user} = useContext(UserContext);
+
 	const menuItems:MenuItem[] = [
 		{
 			text:"Stäng",
@@ -95,6 +97,14 @@ function ProfileMenu({show,setShow}:Props)
 			icon:<EditIcon color="primary" />,
 			type:MenuType.Button,
 			onClick:()=>{}
+		},
+		{
+			padding:true,
+			type:MenuType.Divide
+		},
+		{
+			text:`PIN kod: ${user.pin}`,
+			type:MenuType.Text
 		},
 		{
 			padding:true,

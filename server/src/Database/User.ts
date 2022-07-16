@@ -77,7 +77,8 @@ export const RegisterUser:RegisterUserType = async (user) => {
         phone:user.phone,
         target:"",
         type:user.type,
-        year:user.year
+        year:user.year,
+        pin:user.pin
     };
 
     const dbUser:User = await userDB.insert(writeUser);
@@ -117,28 +118,4 @@ export async function ExecuteOps<T>(ops:BulkWriteOperationTypeExtra<T>[])
 export const GetAllUsers:GetAllUsersType = async () => {
     const allUsers:User[] = await userDB.find();
     return allUsers;
-}
-
-export const AddRandomUser:AddRandomUserType = async () => {
-    const randomName = faker.name.findName();
-    const randomEmail = faker.internet.email();
-
-    const user:User = {
-        alive:true,
-        group:"Na21B",
-        email:randomEmail,
-        forename:randomName.split(" ")[0],
-        hitman:"",
-        id:GetRandomID("user"),
-        kills:0,
-        lastname:randomName.split(" ")[1],
-        password:"PASSWORD",
-        phone:faker.phone.number("+46 ## ### ####"),
-        target:"",
-        type:KillerType.Normal,
-        year:1
-    };
-
-    const dbUser:User = await userDB.insert(user);
-    return dbUser;
 }

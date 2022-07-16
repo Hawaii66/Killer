@@ -4,6 +4,7 @@ import { KillerType, User } from "../../../Shared/User";
 import { AccessType, GetUser, RegisterUser } from "../Database/User";
 import { AddToken, HasToken } from "../Database/JWT";
 import { NumberToKillerType } from "../Functions/NumberToType";
+import GetRandomPin from "../Utils/Pin";
 
 const express = require("express");
 const bcrypt = require("bcrypt");
@@ -98,7 +99,8 @@ export const CreateUser = async (reqBody:User) => {
         phone:reqBody.phone,
         target:"",
         type:NumberToKillerType(reqBody.type),
-        year:reqBody.year
+        year:reqBody.year,
+        pin:GetRandomPin()
     });
 
     return registeredUser;

@@ -1,5 +1,5 @@
 import {Express, Response, Request, response} from "express";
-import { AddRandomUser, BulkWriteOperationType, BulkWriteOperationTypeExtra, ExecuteOps, GetAllUsers, GetUser, UpdateUserCircle } from "../Database/User";
+import { BulkWriteOperationTypeExtra, ExecuteOps, GetAllUsers } from "../Database/User";
 import { KillerType, User } from "../../../Shared/User";
 import { GetPath } from "../Functions/GetPath";
 import { AdminAuth, AdminRequest } from "../Middelware/AdminAuth";
@@ -7,6 +7,7 @@ import { GenerateCircle } from "../Functions/GenerateCircle";
 import { CreateUser } from "./AuthRoutes";
 import { faker } from "@faker-js/faker";
 import { ChangeStartTime } from "../Database/Config";
+import GetRandomPin from "../Utils/Pin";
 
 const express = require("express");
 var csv = require('csv-express')
@@ -105,7 +106,8 @@ router.post("/users/random", async (req:Request, res:Response) => {
         phone:faker.phone.number("+46 ## ### ####"),
         target:"",
         type:KillerType.Normal,
-        year:0
+        year:0,
+        pin:GetRandomPin()
     });
 
     res.json(user);

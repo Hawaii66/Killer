@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { BrowserRouter, Link, Route, Routes, useNavigate } from 'react-router-dom'
 import { useDeadline } from '../Hooks/useDeadline';
 import Home, { HomeRoutes } from './Home'
+import Elev from './Home/Elev/Elev';
+import Information from './Home/Information/Information';
 import Rules from './Home/Rules/Rules';
 import Settings from './Home/Settings/Settings';
 import Login from './WaitForStart/Login/Login';
@@ -56,6 +58,8 @@ function RouteWrapper() {
 			<Route path="/home/settings" element={<Settings />}/>
 			<Route path="/home/stats" element={<div>Sttas</div>}/>
 			<Route path="/home/rules" element={<Rules />}/>
+			<Route path="/home/elev" element={<Elev />} />
+			<Route path="/home/information" element={<Information />} />
 			<Route path="/home/*" element={<Home mode={mode} setMode={setMode}/>}/>
 			<Route path="*" element={<Home mode={mode} setMode={setMode}/>} />
 		</Routes>	

@@ -24,7 +24,8 @@ export const theme = createTheme({
     },
     typography:{
         h1:{
-            fontWeight:800
+            fontWeight:800,
+            color:"#A10035"
         },
         h3:{
             fontWeight:600

@@ -1,4 +1,4 @@
-import { IconButton } from '@mui/material';
+import { IconButton, Typography } from '@mui/material';
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import Rule from './Rule';
@@ -160,7 +160,6 @@ function Rules() {
 			display:"flex",
 			flexDirection:"column",
 			alignItems:"center",
-			maxWidth:"100vw"
 		}}>
 			<div
 				style={{
@@ -168,16 +167,23 @@ function Rules() {
 					justifyContent:"flex-start",
 					width:"100%",
 					marginLeft:"1rem",
-					marginTop:"1rem"
+					marginTop:"1rem",
+					marginBottom:"0.5rem"
 				}}
 			>
-				<IconButton size='large' onClick={()=>navigate("/")}>
-					<CancelIcon />
+				<IconButton sx={{width:"48px",height:"48px"}} onClick={()=>navigate("/")}>
+					<CancelIcon fontSize='large'/>
 				</IconButton>
+				<Typography
+					variant="h1"
+				>
+					Regler
+				</Typography>
 			</div>
 			<div style={{
 				marginLeft:"2rem",
-				marginRight:"2rem"
+				marginRight:"2rem",
+				marginBottom:"5rem"
 			}}>
 				{TextRules.map((rule, index) => {
 					return(

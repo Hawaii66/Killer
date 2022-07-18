@@ -5,6 +5,8 @@ import { AccessType, GetUser, RegisterUser } from "../Database/User";
 import { AddToken, HasToken } from "../Database/JWT";
 import { NumberToKillerType } from "../Functions/NumberToType";
 import GetRandomPin from "../Utils/Pin";
+import { AuthUser } from "../Functions/AuthUser";
+import { AuthedRequest } from "../Functions/AuthUser";
 
 const express = require("express");
 const bcrypt = require("bcrypt");
@@ -75,6 +77,10 @@ router.post("/create", async (req:Request,res:Response)=>{
     const registeredUser = await CreateUser(req.body);    
 
     res.status(200).json(registeredUser);
+});
+
+router.get("/test", AuthUser, (req:AuthedRequest,res:Response) => {
+    res.sendStatus(200);
 });
 
 export const CreateUser = async (reqBody:User) => {

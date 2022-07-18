@@ -8,6 +8,7 @@ import { UserContext } from './Contexts/UserContext';
 import { User, DefaultUser, KillerType } from './Interfaces/User';
 import RouteWrapper from './Routes/RouteWrapper';
 import { theme } from './ThemeProvider';
+import SocketWrapper from './Routes/SocketWrapper';
 
 function App() {
 	const [user,_setUser] = useState<User>(DefaultUser);
@@ -19,6 +20,33 @@ function App() {
 	const setRefreshToken = (token:string) => _setRefreshToken(token);
 
 	const [checkingSession, setChecking] = useState(true);
+
+	const getAccessToken = async () => {
+		const response = await fetch(`http://localhost:5000/auth/test`,{
+			method:"GET",
+			headers:{
+				"Authorization":`Bearer ${accessToken}`
+			}
+		});
+
+		if(response.status === 200)
+		{
+			return accessToken
+		}
+		else
+		{
+			const tokenResponse = await fetch(`http://localhost:5000/auth/token`,{
+				method:"POST",
+				headers:{
+					"Content-Type":"application/json"
+				},
+				body:JSON.stringify({token:refreshToken})
+			});
+			const tokenData = await tokenResponse.json();
+			setAccessToken(tokenData.accessToken);
+			return tokenData.accessToken;
+		}
+	}
 
 	const checkIfPreviousSessionLogin = async () => {
 		const localAccessToken = localStorage.getItem("accesstoken");
@@ -79,13 +107,16 @@ function App() {
 				<ThemeProvider theme={theme}>
 					<UserContext.Provider value={{
 						setUser,
+						getAccessToken,
 						user,
 						accessToken,
 						refreshToken,
 						setAccessToken,
 						setRefreshToken
 					}}>
-						<RouteWrapper />
+						<SocketWrapper>
+							<RouteWrapper />
+						</SocketWrapper>
 					</UserContext.Provider>
 				</ThemeProvider>
 		</BrowserRouter>

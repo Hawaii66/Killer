@@ -1,6 +1,6 @@
 function GetRandomPin()
 {
-    return Array.from(Array(10).keys()).map(_=>getRandomIntInclusive(0, 9).toString()).join("");
+    return Array.from(Array(4).keys()).map(_=>getRandomIntInclusive(0, 9).toString()).join("");
 }
 
 function getRandomIntInclusive(min:number, max:number):number 

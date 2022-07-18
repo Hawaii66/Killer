@@ -1,7 +1,8 @@
-import { Container, SpeedDial, SpeedDialAction, SpeedDialIcon, Badge, Avatar, SxProps, Typography, Button, ButtonGroup, IconButton, SvgIcon } from '@mui/material';
+import { Container, SpeedDial, SpeedDialAction, SpeedDialIcon, Badge, Avatar, SxProps, Typography, Button, ButtonGroup, IconButton, SvgIcon, Skeleton } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../Contexts/UserContext'
+import { SocketContext } from '../Contexts/SocketContext'
 import HomeIcon from '@mui/icons-material/Home';
 import SettingsIcon from '@mui/icons-material/Settings';
 import GavelIcon from '@mui/icons-material/Gavel';
@@ -11,6 +12,7 @@ import TargetIcon from '../Svg/Icons/TargetIcon';
 import UnknownIcon from '../Svg/Icons/UnknownIcon';
 import ProfileMenu from './Home/Profile/ProfileMenu';
 import SchoolIcon from '@mui/icons-material/School';
+import DeathModal from '../Components/DeathModal';
 
 const classes:{[key:string]:SxProps} = {
 	center:{
@@ -76,8 +78,13 @@ interface Props
 function Home({mode,setMode}:Props) {
 	const [showMenu, setShowMenu] = useState(false);
 	const [showUserProfile, setShowUserProfile] = useState(false);
+	const [showDeath, setShowDeath] = useState(0);
+	//0 = dont show
+	//1 = I died
+	//-1 = I murdered
 
 	const {user} = useContext(UserContext);
+	const {alive,total} = useContext(SocketContext);
 	
 	const navigate = useNavigate();
 
@@ -123,7 +130,7 @@ function Home({mode,setMode}:Props) {
 		<div>
 			<Container sx={classes.center}>
 				<Typography sx={classes.header} align="center" color="primary" variant="h1">Killer</Typography>
-				<Typography sx={classes.alive} align="center" color="secondary" variant="h3">16 / 70</Typography>
+				<Typography sx={classes.alive} align="center" color="secondary" variant="h3">{(alive === 0 && total === 0) ? <Skeleton variant="text"/> : `${alive} / ${total}`}</Typography>
 
 				<Button 
 					sx={{
@@ -149,7 +156,7 @@ function Home({mode,setMode}:Props) {
 							height:48,
 							}}
 						>
-							<Typography color="#243558" variant="h5" fontWeight={700}>FA</Typography>
+							<Typography color="#243558" variant="h5" fontWeight={700}>{user.forename[0] + user.lastname[0]}</Typography>
 						</Avatar>
 					</Badge>
 				</Button>
@@ -194,11 +201,16 @@ function Home({mode,setMode}:Props) {
 						</Button>
 					</ButtonGroup>
 				</Container>
+				<DeathModal 
+					setShow={(_)=>setShowDeath(0)}
+					show={showDeath !== 0}
+					userDied={showDeath == 1 ? true : false}
+				/>
 
 				<Container sx={classes.actionbuttons}>
 					<ButtonGroup orientation="vertical" variant="contained" color="primary" aria-label="medium secondary button group">
-						<Button sx={classes.actionButton}>Jag Mördade</Button>
-						<Button sx={classes.actionButton}>Jag Dog</Button>
+						<Button onClick={()=>setShowDeath(-1)} sx={classes.actionButton}>Jag Mördade</Button>
+						<Button onClick={()=>setShowDeath(1)} sx={classes.actionButton}>Jag Dog</Button>
 					</ButtonGroup>
 				</Container>
 			</Container>

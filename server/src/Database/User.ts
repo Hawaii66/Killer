@@ -7,6 +7,8 @@ type AddRandomUserType = () => Promise<User>;
 type UpdateUserCircleType = (users:User[]) => Promise<void>;
 type RegisterUserType = (user:User) => Promise<User>;
 type GetUserType = (key:string, access:AccessType) => Promise<User>;
+type GetUserHitmanType = (id:string) => Promise<User>;
+type GetUserTargetType = (id:string) => Promise<User>;
 
 export enum AccessType {
     EMAIL,
@@ -61,6 +63,16 @@ export const GetUser:GetUserType = async (key:string, access:AccessType) => {
     }
 
     return DefaultUser;
+}
+
+export const GetUserHitman:GetUserHitmanType = async(userID:string) => {
+    const user = await GetUser(userID, AccessType.ID);
+    return await GetUser(user.hitman, AccessType.ID);
+}
+
+export const GetUserTarget:GetUserTargetType = async(userID:string) => {
+    const user = await GetUser(userID, AccessType.ID);
+    return await GetUser(user.target, AccessType.ID);
 }
 
 export const RegisterUser:RegisterUserType = async (user) => {

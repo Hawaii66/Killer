@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { BrowserRouter, Link, Route, Routes, useNavigate } from 'react-router-dom'
 import TargetDeathAnimation from '../Components/Animations/TargetDeathAnimation';
 import { useDeadline } from '../Hooks/useDeadline';
+import HitmanChat from './Chat/HitmanChat';
+import TargetChat from './Chat/TargetChat';
 import Home, { HomeRoutes } from './Home'
 import Elev from './Home/Elev/Elev';
 import Information from './Home/Information/Information';
@@ -63,6 +65,8 @@ function RouteWrapper() {
 			<Route path="/home/elev" element={<Elev />} />
 			<Route path="/home/information" element={<Information />} />
 			<Route path="/home/*" element={<Home mode={mode} setMode={setMode}/>}/>
+			<Route path="/chat/target" element={<TargetChat />} />
+			<Route path="/chat/hitman" element={<HitmanChat />} />
 			<Route path="*" element={<Home mode={mode} setMode={setMode}/>} />
 		</Routes>	
 	)

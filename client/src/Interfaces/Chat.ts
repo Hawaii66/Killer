@@ -10,3 +10,9 @@ export interface Chat {
     target:string,
     hitman:string
 }
+
+export const DefaultChat:Chat = {
+    messages:[],
+    target:"",
+    hitman:""
+}

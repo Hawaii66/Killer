@@ -18,7 +18,7 @@ function App() {
 	const [accessToken, _setAccessToken] = useState("");
 	const [refreshToken, _setRefreshToken] = useState("");
 
-	const setUser = (user:User) => _setUser(user);
+	const setUser = async (user:User) => {_setUser(user);refreshTargetHitman(user,await getAccessToken())};
 	const setAccessToken = (token:string) => _setAccessToken(token);
 	const setRefreshToken = (token:string) => _setRefreshToken(token);
 
@@ -52,6 +52,29 @@ function App() {
 			setAccessToken(tokenData.accessToken);
 			return tokenData.accessToken;
 		}
+	}
+
+	const refreshTargetHitman = async (localUser:User, accessToken:string) => {
+		const opponentResponses = await Promise.all([
+			fetch(`http://localhost:5000/users/${localUser.target}/target`,{
+				method:"GET",
+				headers:{
+					"Content-Type":"application/json",
+					"Authorization":`Bearer ${accessToken}`
+				}
+			}),
+			fetch(`http://localhost:5000/users/${localUser.hitman}/hitman`,{
+				method:"GET",
+				headers:{
+					"Content-Type":"application/json",
+					"Authorization":`Bearer ${accessToken}`
+				}
+			})
+		]);
+		const opponentInfo = await Promise.all(opponentResponses.map(result=>result.json()))
+
+		setTarget(opponentInfo[0]);
+		setHitman(opponentInfo[1]);
 	}
 
 	const checkIfPreviousSessionLogin = async () => {
@@ -88,27 +111,8 @@ function App() {
 		});
 
 		const localUser = await userResponse.json();
-
-		const opponentResponses = await Promise.all([
-			fetch(`http://localhost:5000/users/${localUser.target}/target`,{
-				method:"GET",
-				headers:{
-					"Content-Type":"application/json",
-					"Authorization":`Bearer ${tokenData.accessToken}`
-				}
-			}),
-			fetch(`http://localhost:5000/users/${localUser.hitman}/hitman`,{
-				method:"GET",
-				headers:{
-					"Content-Type":"application/json",
-					"Authorization":`Bearer ${tokenData.accessToken}`
-				}
-			})
-		]);
-		const opponentInfo = await Promise.all(opponentResponses.map(result=>result.json()))
-
-		setTarget(opponentInfo[0]);
-		setHitman(opponentInfo[1]);
+		await refreshTargetHitman(localUser, tokenData.accessToken);
+		
 		setUser(localUser);
 		setAccessToken(tokenData.accessToken);
 		setRefreshToken(localRefreshToken);

@@ -8,10 +8,13 @@ interface Props {
 	helper:string,
 	label:string,
 	disabled?:boolean,
-	error?:boolean
+	error?:boolean,
+	width?:string
 }
 
-function StyledTextField({text,setText,placeHolder, helper,label, disabled,error}:Props) {
+function StyledTextField({text,setText,placeHolder, helper,label, disabled,error,width}:Props) {
+	const internalWidth = width === undefined ? "85%" : width;
+
 	return(
 		<>
 			<div style={{marginTop:"7%",width:"1px",height:"1px"}} />
@@ -28,7 +31,7 @@ function StyledTextField({text,setText,placeHolder, helper,label, disabled,error
 				helperText={helper}
 				InputLabelProps={{shrink:true}}
 				sx={{
-					width:"85%",
+					width:internalWidth,
 					"& .MuiInputLabel-root": {
 						color: '#ecf0f1'
 					},//styles the label

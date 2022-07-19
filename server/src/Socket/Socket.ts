@@ -65,7 +65,6 @@ export const SocketRoutes = (io:Server<CToSEvents, SToCEvents, DefaultEventsMap,
 
         socket.on("deathAccepted", async data => {
             const user = GetUserID(socket.id);
-            console.log("Accept death", user);
             if(user === null) return;
 
             await AcceptDeath(user.userID, data.userDied);

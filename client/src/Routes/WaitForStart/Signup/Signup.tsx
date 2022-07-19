@@ -142,26 +142,6 @@ function Signup({setState}:Props) {
 
 		setSignState(SignState.Loading);
 
-		/*const response = await fetch("http://localhost:5000/auth/create",{
-			method:"POST",
-			headers:{
-				"Content-Type":"application/json"
-			},
-			body:JSON.stringify({
-				group:selectedClass,
-				email,
-				forename,
-				lastname,
-				password:password[0],
-				phone,
-				type:KillerTypeToNumber(playerType),
-				year:GetYearFromClass(selectedClass)
-			})
-		});
-		console.log(response);
-
-		if(response.status !== 200){error(SignState.First);return;}*/
-
 		const {user, refreshToken, accessToken} = await SignUpUser({
 			email,
 			forename,

@@ -1,6 +1,6 @@
 import GetRandomPin from "../Utils/Pin";
 import { Death } from "../../../Shared/Death";
-import { deathDB, userDB } from "./Database";
+import { chatDB, deathDB, userDB } from "./Database";
 import { GetUserTarget } from "./User";
 
 type CreateDeathType = (userID:string,otherID:string,userDied:boolean) => Promise<Death>;
@@ -72,7 +72,6 @@ export const GetUserDeaths:GetUserDeathsType = async (userID) => {
 
 export const AddUser:AddUserType = async (userID, otherID, userDied) => {
     var death = await GetDeath(userID, otherID);
-    console.log(userID,otherID,userDied,death);
     if(death === null) return false;
 
     if(userDied && death.hitman === otherID)
@@ -130,6 +129,16 @@ export const ConfirmDeath:ConfirmDeathType = async (userID, otherID) => {
         $inc:{
             kills: 1
         }
+    });
+
+    await chatDB.remove({
+        hitman:death.hitman,
+        target:death.target
+    });
+    await chatDB.insert({
+        hitman:hitman,
+        target:newTarget.id,
+        messages:[]
     });
 
     return death;

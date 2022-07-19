@@ -30,6 +30,9 @@ export const theme = createTheme({
         h3:{
             fontWeight:600
         },
+        h4:{
+            fontWeight:600
+        },
         h5:{
             fontWeight:500,
 

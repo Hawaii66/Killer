@@ -1,3 +1,4 @@
+import { Message } from "./Chat"
 import { KillerType } from "./User"
 
 export interface CToSEvents
@@ -30,5 +31,6 @@ export interface SToCEvents
             id:string,
             type:KillerType
         }
-    })=>void
+    })=>void,
+    chat:(message:Message)=>void
 }

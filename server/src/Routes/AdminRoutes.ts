@@ -8,6 +8,7 @@ import { CreateUser } from "./AuthRoutes";
 import { faker } from "@faker-js/faker";
 import { ChangeStartTime } from "../Database/Config";
 import GetRandomPin from "../Utils/Pin";
+import { GenerateChats } from "../Database/Chat";
 
 const express = require("express");
 var csv = require('csv-express')
@@ -44,6 +45,12 @@ interface CircleUser
     group:string,
     userid:string
 }
+
+router.post("/chat/reset", async(req:Request, res:Response) => {
+    await GenerateChats();
+    res.sendStatus(200);
+})
+
 router.post("/circle/set", async(req:Request, res:Response) => {
     var dataName:string[] = req.body;
 
@@ -56,7 +63,6 @@ router.post("/circle/set", async(req:Request, res:Response) => {
         });
     });
 
-    console.log(userdata);
     const ops: BulkWriteOperationTypeExtra<{forename:string,lastname:string,group:string}>[] =[];
     
     var previousUser:CircleUser = userdata[userdata.length - 1];

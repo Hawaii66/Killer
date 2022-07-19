@@ -42,7 +42,6 @@ router.post("/death", AuthUser, async (req:AuthedRequest,res:Response) => {
 router.post("/add", AuthUser, async(req:AuthedRequest, res:Response) => {
     const user = await GetUser(req.userID, AccessType.ID);
     const deathMessage:{userDied:boolean, password:string, pin:string} = req.body;
-    console.log(deathMessage);
 
     if(!await bcrypt.compare(deathMessage.password, user.password))
     {
@@ -55,7 +54,6 @@ router.post("/add", AuthUser, async(req:AuthedRequest, res:Response) => {
     }
 
     const isDead = await AddUser(user.id, otherUser.id, deathMessage.userDied);
-    console.log(isDead);
 
     if(isDead)
     {

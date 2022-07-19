@@ -8,6 +8,7 @@ import AuthRoutes from "./Routes/AuthRoutes";
 import UserRoutes from "./Routes/UserRoutes";
 import DefaultRoutes from "./Routes/DefaultRoutes";
 import KillerRoutes from "./Routes/KillerRoutes";
+import ChatRoutes from "./Routes/ChatRoutes";
 import { SocketRoutes } from "./Socket/Socket";
 import { CToSEvents, SToCEvents } from "../../Shared/Socket";
 require("dotenv").config();
@@ -34,6 +35,7 @@ app.use("/auth", AuthRoutes);
 app.use("/users", UserRoutes);
 app.use("/default", DefaultRoutes);
 app.use("/killer", KillerRoutes);
+app.use("/chat", ChatRoutes);
 
 app.get("/",(_,res)=>{
     res.send("Server online");

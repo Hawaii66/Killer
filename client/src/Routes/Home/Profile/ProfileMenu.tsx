@@ -107,12 +107,17 @@ function ProfileMenu({show,setShow}:Props)
 		{
 			padding:true,
 			type:MenuType.Divide,
-			showIfAlive:true
+			showIfAlive:false
 		},
 		{
 			text:`PIN kod: ${user.pin}`,
 			type:MenuType.Text,
 			showIfAlive:true
+		},
+		{
+			text:`Kills: ${user.kills}`,
+			type:MenuType.Text,
+			showIfAlive:false
 		},
 		{
 			padding:true,

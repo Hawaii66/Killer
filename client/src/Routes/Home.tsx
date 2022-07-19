@@ -135,7 +135,6 @@ function Home({mode,setMode}:Props) {
 			<Container sx={classes.center}>
 				<Typography sx={classes.header} align="center" color="primary" variant="h1">Killer</Typography>
 				<Typography sx={classes.alive} align="center" color="secondary" variant="h3">{(alive === 0 && total === 0) ? <Skeleton variant="text"/> : `${alive} / ${total}`}</Typography>
-				<Typography sx={classes.kills} align="center" color="secondary" variant="h3">{`Offer: ${user.kills}`}</Typography>
 
 				<Button 
 					sx={{
@@ -196,13 +195,13 @@ function Home({mode,setMode}:Props) {
 				{user.alive ? <>
 					<Container sx={classes.quickMenu}>
 						<ButtonGroup color="info" variant="contained" size="large" aria-label="text button group">
-							<Button color="info">
+							<Button onClick={()=>navigate("/chat/target")} color="info">
 								<TargetIcon />
 							</Button>
 							<Button color="info" onClick={()=>navigate("/home/stats")}>
 								<AssessmentIcon />
 							</Button>
-							<Button color="info">
+							<Button onClick={()=>navigate("/chat/hitman")} color="info">
 								<UnknownIcon />
 							</Button>
 						</ButtonGroup>

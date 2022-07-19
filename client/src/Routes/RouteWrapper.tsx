@@ -1,6 +1,7 @@
 import { CircularProgress, Container, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter, Link, Route, Routes, useNavigate } from 'react-router-dom'
+import TargetDeathAnimation from '../Components/Animations/TargetDeathAnimation';
 import { useDeadline } from '../Hooks/useDeadline';
 import Home, { HomeRoutes } from './Home'
 import Elev from './Home/Elev/Elev';
@@ -49,6 +50,7 @@ function RouteWrapper() {
 			</Container>
 		)
 	}
+
 
 	return (
 		<Routes>

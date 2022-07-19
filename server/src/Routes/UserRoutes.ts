@@ -1,4 +1,5 @@
 import { Response } from "express";
+import { IHitman, ITarget } from "../../../Shared/Opponent";
 import { AccessType, GetUser } from "../Database/User";
 import { AuthedRequest, AuthUser, AuthUserIDParam } from "../Functions/AuthUser";
 
@@ -34,6 +35,36 @@ router.get("/:id/stats", AuthUser, async (req:AuthedRequest, res:Response) => {
         alive,
         type
     });
+});
+
+router.get("/:id/target", AuthUser, async (req:AuthedRequest, res:Response) => {
+    const user = await GetUser(req.params.id, AccessType.ID);
+    const requestUser = req.userID;
+
+    if(user.hitman !== requestUser) return res.status(400).send("Wrong user authentication");
+
+    const targetInfo:ITarget = {
+        forename:user.forename,
+        group:user.group,
+        id:user.id,
+        lastname:user.lastname,
+        type:user.type
+    }
+    
+    res.json(targetInfo);
+});
+
+router.get("/:id/hitman", AuthUser, async (req:AuthedRequest, res:Response) => {
+    const user = await GetUser(req.params.id, AccessType.ID);
+    const requestUser = req.userID;
+
+    if(user.target !== requestUser) return res.status(400).send("Wrong user authentication");
+
+    const hitmanInfo:IHitman = {
+        id:user.id
+    }
+    
+    res.json(hitmanInfo);
 });
 
 export default router;

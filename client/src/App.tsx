@@ -9,6 +9,9 @@ import { User, DefaultUser, KillerType } from './Interfaces/User';
 import RouteWrapper from './Routes/RouteWrapper';
 import { theme } from './ThemeProvider';
 import SocketWrapper from './Routes/SocketWrapper';
+import TargetDeathAnimation from './Components/Animations/TargetDeathAnimation';
+import AnimationWrapper from './Components/Animations/AnimationWrapper';
+import { DefaultTarget, DefaultHitman, OpponentContext } from './Contexts/OpponentContext';
 
 function App() {
 	const [user,_setUser] = useState<User>(DefaultUser);
@@ -18,6 +21,9 @@ function App() {
 	const setUser = (user:User) => _setUser(user);
 	const setAccessToken = (token:string) => _setAccessToken(token);
 	const setRefreshToken = (token:string) => _setRefreshToken(token);
+
+	const [target, setTarget] = useState(DefaultTarget);
+	const [hitman, setHitman] = useState(DefaultHitman);
 
 	const [checkingSession, setChecking] = useState(true);
 
@@ -82,6 +88,27 @@ function App() {
 		});
 
 		const localUser = await userResponse.json();
+
+		const opponentResponses = await Promise.all([
+			fetch(`http://localhost:5000/users/${localUser.target}/target`,{
+				method:"GET",
+				headers:{
+					"Content-Type":"application/json",
+					"Authorization":`Bearer ${tokenData.accessToken}`
+				}
+			}),
+			fetch(`http://localhost:5000/users/${localUser.hitman}/hitman`,{
+				method:"GET",
+				headers:{
+					"Content-Type":"application/json",
+					"Authorization":`Bearer ${tokenData.accessToken}`
+				}
+			})
+		]);
+		const opponentInfo = await Promise.all(opponentResponses.map(result=>result.json()))
+
+		setTarget(opponentInfo[0]);
+		setHitman(opponentInfo[1]);
 		setUser(localUser);
 		setAccessToken(tokenData.accessToken);
 		setRefreshToken(localRefreshToken);
@@ -114,9 +141,17 @@ function App() {
 						setAccessToken,
 						setRefreshToken
 					}}>
-						<SocketWrapper>
-							<RouteWrapper />
-						</SocketWrapper>
+						<OpponentContext.Provider value={{
+							target:target,
+							hitman:hitman,
+							setTarget:(t)=>setTarget(t),
+							setHitman:(h)=>setHitman(h)
+						}}>
+							<SocketWrapper>
+								<AnimationWrapper />
+								<RouteWrapper />
+							</SocketWrapper>
+						</OpponentContext.Provider>
 					</UserContext.Provider>
 				</ThemeProvider>
 		</BrowserRouter>

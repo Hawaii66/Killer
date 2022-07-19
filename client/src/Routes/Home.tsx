@@ -26,7 +26,11 @@ const classes:{[key:string]:SxProps} = {
 		marginBottom:"1rem"
 	},
 	alive:{
-		marginBottom:"1rem"
+		marginBottom:"0.1rem"
+	},
+	kills:{
+		marginBottom:"0.7rem",
+		fontSize:"1.5rem"
 	},
 	quickMenu:{
 		display:"flex",
@@ -131,6 +135,7 @@ function Home({mode,setMode}:Props) {
 			<Container sx={classes.center}>
 				<Typography sx={classes.header} align="center" color="primary" variant="h1">Killer</Typography>
 				<Typography sx={classes.alive} align="center" color="secondary" variant="h3">{(alive === 0 && total === 0) ? <Skeleton variant="text"/> : `${alive} / ${total}`}</Typography>
+				<Typography sx={classes.kills} align="center" color="secondary" variant="h3">{`Offer: ${user.kills}`}</Typography>
 
 				<Button 
 					sx={{
@@ -188,32 +193,42 @@ function Home({mode,setMode}:Props) {
 					))}
 				</SpeedDial>
 
-				<Container sx={classes.quickMenu}>
-					<ButtonGroup color="info" variant="contained" size="large" aria-label="text button group">
-						<Button color="info">
-							<TargetIcon />
-						</Button>
-						<Button color="info">
-							<AssessmentIcon />
-						</Button>
-						<Button color="info">
-							<UnknownIcon />
-						</Button>
-					</ButtonGroup>
-				</Container>
+				{user.alive ? <>
+					<Container sx={classes.quickMenu}>
+						<ButtonGroup color="info" variant="contained" size="large" aria-label="text button group">
+							<Button color="info">
+								<TargetIcon />
+							</Button>
+							<Button color="info" onClick={()=>navigate("/home/stats")}>
+								<AssessmentIcon />
+							</Button>
+							<Button color="info">
+								<UnknownIcon />
+							</Button>
+						</ButtonGroup>
+					</Container>
+				</> : 
+					<Button  color="primary" onClick={()=>navigate("/home/stats")} sx={{width:"7rem",height:"7rem"}}>
+						<AssessmentIcon sx={{width:"6rem",height:"6rem"}}/>
+					</Button>
+				}
 				<DeathModal 
 					setShow={(_)=>setShowDeath(0)}
 					show={showDeath !== 0}
 					userDied={showDeath == 1 ? true : false}
 				/>
 
-				<Container sx={classes.actionbuttons}>
-					<ButtonGroup orientation="vertical" variant="contained" color="primary" aria-label="medium secondary button group">
-						<Button onClick={()=>setShowDeath(-1)} sx={classes.actionButton}>Jag Mördade</Button>
-						<Button onClick={()=>setShowDeath(1)} sx={classes.actionButton}>Jag Dog</Button>
-					</ButtonGroup>
-				</Container>
+				{user.alive && <>
+					<Container sx={classes.actionbuttons}>
+						<ButtonGroup orientation="vertical" variant="contained" color="primary" aria-label="medium secondary button group">
+							<Button onClick={()=>setShowDeath(-1)} sx={classes.actionButton}>Jag Mördade</Button>
+							<Button onClick={()=>setShowDeath(1)} sx={classes.actionButton}>Jag Dog</Button>
+						</ButtonGroup>
+					</Container>
+				</>}
 			</Container>
+
+			{!user.alive && <div style={{position:"absolute",bottom:"10px",right:"10px"}}><Typography variant="body2" color="primary">Du är död</Typography></div>}
 		</div>
 	)
 }

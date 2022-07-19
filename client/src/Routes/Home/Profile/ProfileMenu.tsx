@@ -53,19 +53,22 @@ enum MenuType
 
 type Divide = {
 	padding:boolean,
-	type:MenuType.Divide
+	type:MenuType.Divide,
+	showIfAlive:boolean
 }
 
 type Button = {
 	text:string,
 	icon:React.ReactNode,
 	type:MenuType.Button,
-	onClick:()=>void
+	onClick:()=>void,
+	showIfAlive:boolean
 }
 
 type Text = {
 	text:string,
-	type:MenuType.Text
+	type:MenuType.Text,
+	showIfAlive:boolean
 }
 
 type MenuItem = Divide | Button | Text;
@@ -77,50 +80,57 @@ interface Props{
 
 function ProfileMenu({show,setShow}:Props)
 {
-	const {user} = useContext(UserContext);
-
+	const {user, setUser} = useContext(UserContext);
+	
 	const menuItems:MenuItem[] = [
 		{
 			text:"Stäng",
 			icon:<CloseIcon color="primary"/>,
 			type:MenuType.Button,
-			onClick:()=>{}
+			onClick:()=>{},
+			showIfAlive:false
 		},
 		{
 			text:"Logga Ut",
 			icon:<LogoutIcon color="primary" />,
 			type:MenuType.Button,
-			onClick:()=>{}
+			onClick:()=>{},
+			showIfAlive:false
 		},
 		{
 			text:"Ändra",
 			icon:<EditIcon color="primary" />,
 			type:MenuType.Button,
-			onClick:()=>{}
+			onClick:()=>{},
+			showIfAlive:false
 		},
 		{
 			padding:true,
-			type:MenuType.Divide
+			type:MenuType.Divide,
+			showIfAlive:true
 		},
 		{
 			text:`PIN kod: ${user.pin}`,
-			type:MenuType.Text
+			type:MenuType.Text,
+			showIfAlive:true
 		},
 		{
 			padding:true,
-			type:MenuType.Divide
+			type:MenuType.Divide,
+			showIfAlive:false
 		},
 		{
 			text:"@HawaiiDev",
-			type:MenuType.Text
+			type:MenuType.Text,
+			showIfAlive:false
 		},
 		{
 			text:"hawaiilive@outlook.com",
-			type:MenuType.Text
+			type:MenuType.Text,
+			showIfAlive:false
 		}
 	];
 
-	const {setUser} = useContext(UserContext);
 	const navigate = useNavigate();
 	
 	const iconClicked = (index:number) => {
@@ -164,9 +174,11 @@ function ProfileMenu({show,setShow}:Props)
 				>
 				<List>
 					{menuItems.map((item,index)=>{
-						if(item.type === MenuType.Button) return <ProfileMenuButton onClick={()=>iconClicked(index)} key={index} text={item.text} icon={item.icon} type={MenuType.Button} />
-						if(item.type === MenuType.Text) return <ProfileMenuText key={index} text={item.text} type={MenuType.Text} />
-						if(item.type === MenuType.Divide) return <ProfileMenuDivide key={index} padding={item.padding} type={MenuType.Divide} />
+						if(!user.alive && item.showIfAlive) return <></>;
+
+						if(item.type === MenuType.Button) return <ProfileMenuButton showIfAlive={false} onClick={()=>iconClicked(index)} key={index} text={item.text} icon={item.icon} type={MenuType.Button} />
+						if(item.type === MenuType.Text) return <ProfileMenuText showIfAlive={false} key={index} text={item.text} type={MenuType.Text} />
+						if(item.type === MenuType.Divide) return <ProfileMenuDivide showIfAlive={false} key={index} padding={item.padding} type={MenuType.Divide} />
 					})}
 				</List>
 			</Box>

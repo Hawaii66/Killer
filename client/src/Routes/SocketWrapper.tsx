@@ -9,8 +9,6 @@ interface Props
 	children:React.ReactNode
 }
 
-//const socket:Socket<SToCEvents,CToSEvents> = io("http://localhost:5000");
-
 function SocketWrapper({children}:Props) {
 	const [socket, setSocket] = useState<Socket<SToCEvents,CToSEvents>>(io("http://localhost:5000"));
 	const [isConnected, setIsConnected] = useState(false);
@@ -22,9 +20,6 @@ function SocketWrapper({children}:Props) {
 	const {user} = useContext(UserContext);
 
 	useEffect(()=>{
-		//const _socket = io("http://localhost:5000");
-		//setSocket(_socket);
-
 		socket.on("connect", () => {
 			setIsConnected(true);
 

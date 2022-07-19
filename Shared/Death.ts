@@ -5,5 +5,6 @@ export interface Death
     hVerified:boolean,
     tVerified:boolean,
     hNotification:boolean,
-    tNotification:boolean
+    tNotification:boolean,
+    murderTime:number
 }

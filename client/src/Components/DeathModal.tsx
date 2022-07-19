@@ -48,6 +48,9 @@ function DeathModal({userDied, show, setShow}:Props)
 				})
 			});
 		}		
+
+		setLoading(false);
+		setShow(false);
 	}
 
 	const DialogLoading = () => {

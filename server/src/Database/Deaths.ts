@@ -60,8 +60,8 @@ export const GetUserDeaths:GetUserDeathsType = async (userID) => {
     var hitman:Death|null = null;
     for(var i = 0; i < deaths.length; i ++)
     {
-        if(deaths[i].hitman === userID) hitman = deaths[i];
-        if(deaths[i].target === userID) target = deaths[i];
+        if(deaths[i].hitman === userID && deaths[i].hVerified === true && deaths[i].tVerified === true) hitman = deaths[i];
+        if(deaths[i].target === userID && deaths[i].hVerified === true && deaths[i].tVerified === true) target = deaths[i];
     }
 
     return {

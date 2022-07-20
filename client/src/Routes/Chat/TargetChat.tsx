@@ -1,4 +1,4 @@
-import { IconButton, Typography, Divider, List, ListItem, Container, ListItemText, AppBar, Paper } from '@mui/material'
+import { IconButton, Typography, Divider, List, ListItem, Container, ListItemText, AppBar, Paper, CircularProgress } from '@mui/material'
 import React, {useContext, useEffect, useRef, useState} from 'react'
 import CancelIcon from '@mui/icons-material/Cancel';
 import SendIcon from '@mui/icons-material/Send';
@@ -31,10 +31,16 @@ function TargetChat() {
     
     const scrollRef = useRef<HTMLLIElement>(null);
 
+    const scrollToBottom = () => {
+        setTimeout(()=>{
+            if (scrollRef.current) {
+                scrollRef.current.scrollIntoView({behavior:"smooth"});
+            }
+        },100)
+    }
+
     useEffect(() => {
-        if (scrollRef.current) {
-          scrollRef.current.scrollIntoView({behavior:"smooth"});
-        }
+        scrollToBottom()
     }, [scrollRef]);
 
     useEffect(()=>{
@@ -48,6 +54,7 @@ function TargetChat() {
                     messages:[...prev.messages, data]
                 })
             })
+            scrollToBottom()
         })
     },[]);
 
@@ -70,6 +77,8 @@ function TargetChat() {
         });
 
         setChat(await conversationResponse.json());
+        setLoading(false);
+        scrollToBottom()
     }
 
     const sendChat = async () => {
@@ -86,6 +95,7 @@ function TargetChat() {
             })
         });
         setText("");
+        scrollToBottom()
 
         await fetch(`http://localhost:5000/chat/add`,{
             method:"POST",
@@ -107,7 +117,8 @@ function TargetChat() {
 			display:"flex",
 			flexDirection:"column",
 			alignItems:"center",
-            maxHeight:"100vh"
+            maxHeight:"100vh",
+            height:"100vh"
 		}}>
             <div
                 style={{
@@ -117,7 +128,8 @@ function TargetChat() {
                     marginTop:"1rem",
                     marginBottom:"0.5rem",
                     width:"100%",
-                    flexGrow:9
+                    flexGrow:9,
+                    maxHeight:"6rem"
                 }}
             >
                 <IconButton sx={{paddingLeft:"1rem",width:"48px",height:"48px"}} onClick={()=>navigate("/")}>
@@ -132,47 +144,68 @@ function TargetChat() {
                 </div>
             </div>
             <Container sx={{flexGrow:1,maxHeight: "auto", overflow: 'auto',backgroundColor:`#${theme.palette.background.default}`}}>
-                <List>
-                    {chat.messages.map(message => {
-                        return <ChatMessage 
-                            chat={message}
-                            initials={target.forename[0] + target.lastname[0]}
-                            key={message.id}
-                        />
-                    })}
-                    <ListItem ref={scrollRef}></ListItem>
-                </List>
+                {
+                    loading ? 
+                        <div style={{
+                            display:"flex",
+                            justifyContent:"center",
+                            alignItems:"center",
+                            height:"20rem"
+                        }}>
+                            <CircularProgress color="primary" size={80} thickness={8}/>
+                        </div>
+                    : 
+                        <List>
+                            {chat.messages.map(message => {
+                                return <ChatMessage 
+                                    chat={message}
+                                    initials={target.forename[0] + target.lastname[0]}
+                                    key={message.id}
+                                />
+                            })}
+                            <ListItem ref={scrollRef}></ListItem>
+                        </List>
+                    }
             </Container>
-            <div style={{
-                paddingBottom:"1rem",
-                paddingTop:"1rem",
-                flexGrow:900,
-                display:"flex",
-                flexDirection:"row",
-                width:"90%",
-                alignItems:"center",
-            }}>
+            {!loading &&
                 <div style={{
-                    flexGrow:100,
+                    paddingBottom:"1rem",
+                    paddingTop:"1rem",
+                    flexGrow:900,
+                    display:"flex",
+                    flexDirection:"row",
+                    width:"90%",
+                    alignItems:"center",
+                    justifySelf:"flex-end",
+                    height:"6rem",
+                    maxHeight:"6rem"
                 }}>
-                    <StyledTextField
-                        width="100%"
-                        helper=''
-                        label='Chat'
-                        placeHolder='Skriv här...'
-                        setText={(t)=>setText(t)}
-                        text={text}
-                        disabled={false}
-                    />
+                    <div style={{
+                        flexGrow:100,
+                    }}>
+                        <StyledTextField
+                            width="100%"
+                            helper=''
+                            label='Chat'
+                            placeHolder='Skriv här...'
+                            setText={(t)=>setText(t)}
+                            text={text}
+                            disabled={false}
+                        />
+                    </div>
+                    <div>
+                <div style={{
+                    marginTop:"7%",
+                    width:"1px",
+                    height:"1px"
+                }} />
+                    <IconButton sx={{paddingLeft:"1rem",width:"48px",height:"48px",paddingBottom:"0px"}} onClick={()=>sendChat()}>
+                        <SendIcon color="primary" fontSize='large'/>
+                    </IconButton>
+                    <Typography fontWeight={700} color={theme.palette.primary.main} sx={{marginLeft:"0.5rem"}}>Skicka</Typography>
+                    </div>
                 </div>
-                <div>
-			<div style={{marginTop:"7%",width:"1px",height:"1px"}} />
-                <IconButton sx={{paddingLeft:"1rem",width:"48px",height:"48px",paddingBottom:"0px"}} onClick={()=>sendChat()}>
-                    <SendIcon color="primary" fontSize='large'/>
-                </IconButton>
-                <Typography fontWeight={700} color={theme.palette.primary.main} sx={{marginLeft:"0.5rem"}}>Skicka</Typography>
-                </div>
-            </div>
+            }
         </div>
     )
 }

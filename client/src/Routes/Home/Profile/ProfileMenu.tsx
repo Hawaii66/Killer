@@ -145,6 +145,7 @@ function ProfileMenu({show,setShow}:Props)
 				setShow(false);
 				break;
 			case 1:
+				localStorage.clear();
 				setUser(DefaultUser);
 				setShow(false);
 				navigate("/");

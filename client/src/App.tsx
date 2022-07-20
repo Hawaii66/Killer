@@ -12,13 +12,18 @@ import SocketWrapper from './Routes/SocketWrapper';
 import TargetDeathAnimation from './Components/Animations/TargetDeathAnimation';
 import AnimationWrapper from './Components/Animations/AnimationWrapper';
 import { DefaultTarget, DefaultHitman, OpponentContext } from './Contexts/OpponentContext';
+import { SystemSecurityUpdateWarningSharp } from '@mui/icons-material';
+import StaticWrapper from './Routes/StaticWrapper';
 
 function App() {
 	const [user,_setUser] = useState<User>(DefaultUser);
 	const [accessToken, _setAccessToken] = useState("");
 	const [refreshToken, _setRefreshToken] = useState("");
 
-	const setUser = async (user:User) => {_setUser(user);refreshTargetHitman(user,await getAccessToken())};
+	const setUser = async (newUser:User) => {
+		_setUser(newUser);
+		refreshTargetHitman(newUser,await getAccessToken())
+	};
 	const setAccessToken = (token:string) => _setAccessToken(token);
 	const setRefreshToken = (token:string) => _setRefreshToken(token);
 
@@ -55,6 +60,12 @@ function App() {
 	}
 
 	const refreshTargetHitman = async (localUser:User, accessToken:string) => {
+		if(localUser.target === "" || localUser.hitman === "")
+		{
+			setTarget(DefaultTarget);
+			setHitman(DefaultHitman);
+		}
+
 		const opponentResponses = await Promise.all([
 			fetch(`http://localhost:5000/users/${localUser.target}/target`,{
 				method:"GET",
@@ -123,6 +134,13 @@ function App() {
 		checkIfPreviousSessionLogin();
 	},[]);
 
+	useEffect(()=>{
+		const refresh = async () => {
+		refreshTargetHitman(user, await getAccessToken());
+		}
+		refresh()
+	},[user])
+
 	if(checkingSession)
 	{
 		return(
@@ -134,31 +152,33 @@ function App() {
 	}
 
 	return (
-		<BrowserRouter>
-				<ThemeProvider theme={theme}>
-					<UserContext.Provider value={{
-						setUser,
-						getAccessToken,
-						user,
-						accessToken,
-						refreshToken,
-						setAccessToken,
-						setRefreshToken
-					}}>
-						<OpponentContext.Provider value={{
-							target:target,
-							hitman:hitman,
-							setTarget:(t)=>setTarget(t),
-							setHitman:(h)=>setHitman(h)
+		<StaticWrapper>
+			<BrowserRouter>
+					<ThemeProvider theme={theme}>
+						<UserContext.Provider value={{
+							setUser,
+							getAccessToken,
+							user,
+							accessToken,
+							refreshToken,
+							setAccessToken,
+							setRefreshToken
 						}}>
-							<SocketWrapper>
-								<AnimationWrapper />
-								<RouteWrapper />
-							</SocketWrapper>
-						</OpponentContext.Provider>
-					</UserContext.Provider>
-				</ThemeProvider>
-		</BrowserRouter>
+							<OpponentContext.Provider value={{
+								target:target,
+								hitman:hitman,
+								setTarget:(t)=>setTarget(t),
+								setHitman:(h)=>setHitman(h)
+							}}>
+								<SocketWrapper>
+									<AnimationWrapper />
+									<RouteWrapper />
+								</SocketWrapper>
+							</OpponentContext.Provider>
+						</UserContext.Provider>
+					</ThemeProvider>
+			</BrowserRouter>
+		</StaticWrapper>
 	);
 }
 

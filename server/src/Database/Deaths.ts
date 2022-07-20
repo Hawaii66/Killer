@@ -135,6 +135,10 @@ export const ConfirmDeath:ConfirmDeathType = async (userID, otherID) => {
         hitman:death.hitman,
         target:death.target
     });
+    await chatDB.remove({
+        hitman:death.target,
+        target:newTarget.id
+    })
     await chatDB.insert({
         hitman:hitman,
         target:newTarget.id,

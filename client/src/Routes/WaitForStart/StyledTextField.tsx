@@ -18,7 +18,8 @@ function StyledTextField({text,setText,placeHolder, helper,label, disabled,error
 	return(
 		<>
 			<div style={{marginTop:"7%",width:"1px",height:"1px"}} />
-			<TextField 
+			<TextField
+				autoComplete="off"
 				error={error === undefined ? false : error}
 				variant="outlined"
 				placeholder={placeHolder}

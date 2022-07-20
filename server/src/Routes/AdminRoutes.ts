@@ -9,6 +9,7 @@ import { faker } from "@faker-js/faker";
 import { ChangeStartTime } from "../Database/Config";
 import GetRandomPin from "../Utils/Pin";
 import { GenerateChats } from "../Database/Chat";
+import { GetAllSockets } from "../Socket/Socket";
 
 const express = require("express");
 var csv = require('csv-express')
@@ -49,6 +50,13 @@ interface CircleUser
 router.post("/chat/reset", async(req:Request, res:Response) => {
     await GenerateChats();
     res.sendStatus(200);
+})
+
+router.post("/sockets/get", (req:Request, res:Response) => {
+    const sockets = GetAllSockets();
+    const returnData:{socketID:string,userID:string}[] = sockets.map(socketUser=>{return{userID:socketUser.userID, socketID:socketUser.socket.id}})
+
+    res.json(returnData)
 })
 
 router.post("/circle/set", async(req:Request, res:Response) => {

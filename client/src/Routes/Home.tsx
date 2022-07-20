@@ -37,14 +37,14 @@ const classes:{[key:string]:SxProps} = {
 		justifyContent:"center",
 		alignItems:"center",
 		flexDirection:"column",
-		marginTop:"4rem"
+		marginTop:"2rem"
 	},
 	actionbuttons:{
 		display:"flex",
 		justifyContent:"center",
 		alignItems:"center",
 		flexDirection:"column",
-		marginTop:"4rem"
+		marginTop:"2rem"
 	},
 	actionButton:{
 		marginTop:"0.5rem",

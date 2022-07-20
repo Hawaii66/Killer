@@ -52,6 +52,8 @@ export const GenerateChats:GenerateChatsType = async () => {
     var ops:BulkGenerateChats[] = [];
     const users = await userDB.find();
     users.forEach((user,index) => {
+        if(!user.alive) return;
+
         ops.push({
             insertOne:{
                 document:{

@@ -11,6 +11,7 @@ import { width } from '@mui/system';
 import ChatMessage from '../../Components/Chat/ChatMessage';
 import { SocketContext } from '../../Contexts/SocketContext';
 import { Chat } from '../../Interfaces/Chat';
+import { StaticContext } from '../../Contexts/StaticContext';
 
 
 function TargetChat() {
@@ -28,6 +29,7 @@ function TargetChat() {
 
     const navigate = useNavigate();
     const {socket} = useContext(SocketContext);
+    const {api} = useContext(StaticContext);
     
     const scrollRef = useRef<HTMLLIElement>(null);
 
@@ -62,8 +64,15 @@ function TargetChat() {
         getChats()
     },[]);
 
+    useEffect(()=>{
+		if(user.id === "")
+		{
+			navigate("/login");
+		}
+	},[user]);
+
     const getChats = async () => {
-        const conversationResponse = await fetch(`http://localhost:5000/chat/get`,{
+        const conversationResponse = await fetch(`${api}/chat/get`,{
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -97,7 +106,7 @@ function TargetChat() {
         setText("");
         scrollToBottom()
 
-        await fetch(`http://localhost:5000/chat/add`,{
+        await fetch(`${api}/chat/add`,{
             method:"POST",
             headers:{
                 "Content-Type":"application/json",

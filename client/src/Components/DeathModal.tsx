@@ -1,5 +1,6 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, CircularProgress } from "@mui/material";
 import React, { useContext, useState } from "react";
+import { StaticContext } from "../Contexts/StaticContext";
 import { UserContext } from "../Contexts/UserContext";
 import StyledTextField from "../Routes/WaitForStart/StyledTextField";
 import { theme } from "../ThemeProvider";
@@ -16,11 +17,12 @@ function DeathModal({userDied, show, setShow}:Props)
 	const [password, setPassword] = useState("");
 	const [pin, setPin] = useState("");
 	const {getAccessToken} = useContext(UserContext);
+	const {api} = useContext(StaticContext);
 
 	const DeathClicked = async () => {
 		setLoading(true);
 
-		const response = await fetch(`http://localhost:5000/killer/death`,{
+		const response = await fetch(`${api}/killer/death`,{
 			method:"POST",
 			headers:{
 				"Content-Type":"application/json",
@@ -35,7 +37,7 @@ function DeathModal({userDied, show, setShow}:Props)
 		const data = await response.json();
 		if(!data.new)
 		{
-			await fetch(`http://localhost:5000/killer/add`,{
+			await fetch(`${api}/killer/add`,{
 				method:"POST",
 				headers:{
 					"Content-Type":"application/json",

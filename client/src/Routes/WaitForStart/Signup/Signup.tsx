@@ -3,6 +3,7 @@ import { Button, Container, MenuItem, SxProps, TextField, Typography, Dialog, Di
 import React,{useContext, useState} from 'react'
 import { setSourceMapRange } from 'typescript'
 import TimeoutAlert from '../../../Components/TimeoutAlert'
+import { StaticContext } from '../../../Contexts/StaticContext'
 import { UserContext } from '../../../Contexts/UserContext'
 import { usePost } from '../../../Hooks/useFetch'
 import { KillerType, User } from '../../../Interfaces/User'
@@ -125,6 +126,7 @@ function Signup({setState}:Props) {
 	const [signState,setSignState] = useState(SignState.First);
 
 	const {setUser, setRefreshToken, setAccessToken} = useContext(UserContext);
+	const {api} = useContext(StaticContext);
 
 	const error = (state:SignState) => {
 		setShowError(true);
@@ -142,7 +144,7 @@ function Signup({setState}:Props) {
 
 		setSignState(SignState.Loading);
 
-		const {user, refreshToken, accessToken} = await SignUpUser({
+		const {user, refreshToken, accessToken} = await SignUpUser({api,signUpUser:{
 			email,
 			forename,
 			lastname,
@@ -151,7 +153,7 @@ function Signup({setState}:Props) {
 			type:KillerTypeToNumber(playerType),
 			year:GetYearFromClass(selectedClass),
 			group:selectedClass
-		});
+		}});
 
 		setUser(user);
 		setRefreshToken(refreshToken);

@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@emotion/react';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { BrowserRouter, Routes } from 'react-router-dom';
 import {CircularProgress, Container, Typography } from "@mui/material";
 
@@ -14,6 +14,7 @@ import AnimationWrapper from './Components/Animations/AnimationWrapper';
 import { DefaultTarget, DefaultHitman, OpponentContext } from './Contexts/OpponentContext';
 import { SystemSecurityUpdateWarningSharp } from '@mui/icons-material';
 import StaticWrapper from './Routes/StaticWrapper';
+import { StaticContext } from './Contexts/StaticContext';
 
 function App() {
 	const [user,_setUser] = useState<User>(DefaultUser);
@@ -32,8 +33,10 @@ function App() {
 
 	const [checkingSession, setChecking] = useState(true);
 
+	const {api} = useContext(StaticContext);
+
 	const getAccessToken = async () => {
-		const response = await fetch(`http://localhost:5000/auth/test`,{
+		const response = await fetch(`${api}/auth/test`,{
 			method:"GET",
 			headers:{
 				"Authorization":`Bearer ${accessToken}`
@@ -46,7 +49,7 @@ function App() {
 		}
 		else
 		{
-			const tokenResponse = await fetch(`http://localhost:5000/auth/token`,{
+			const tokenResponse = await fetch(`${api}/auth/token`,{
 				method:"POST",
 				headers:{
 					"Content-Type":"application/json"
@@ -67,14 +70,14 @@ function App() {
 		}
 
 		const opponentResponses = await Promise.all([
-			fetch(`http://localhost:5000/users/${localUser.target}/target`,{
+			fetch(`${api}/users/${localUser.target}/target`,{
 				method:"GET",
 				headers:{
 					"Content-Type":"application/json",
 					"Authorization":`Bearer ${accessToken}`
 				}
 			}),
-			fetch(`http://localhost:5000/users/${localUser.hitman}/hitman`,{
+			fetch(`${api}/users/${localUser.hitman}/hitman`,{
 				method:"GET",
 				headers:{
 					"Content-Type":"application/json",
@@ -104,7 +107,7 @@ function App() {
 			return;
 		}
 
-		const tokenResponse = await fetch(`http://localhost:5000/auth/token`,{
+		const tokenResponse = await fetch(`${api}/auth/token`,{
 			method:"POST",
 			headers:{
 				"Content-Type":"application/json"
@@ -113,7 +116,7 @@ function App() {
 		});
 		const tokenData = await tokenResponse.json();
 
-		const userResponse = await fetch(`http://localhost:5000/users/${localuserid}/all`,{
+		const userResponse = await fetch(`${api}/users/${localuserid}/all`,{
 			method:"GET",
 			headers:{
 				"Content-Type":"application/json",
@@ -152,33 +155,31 @@ function App() {
 	}
 
 	return (
-		<StaticWrapper>
-			<BrowserRouter>
-					<ThemeProvider theme={theme}>
-						<UserContext.Provider value={{
-							setUser,
-							getAccessToken,
-							user,
-							accessToken,
-							refreshToken,
-							setAccessToken,
-							setRefreshToken
+		<BrowserRouter>
+				<ThemeProvider theme={theme}>
+					<UserContext.Provider value={{
+						setUser,
+						getAccessToken,
+						user,
+						accessToken,
+						refreshToken,
+						setAccessToken,
+						setRefreshToken
+					}}>
+						<OpponentContext.Provider value={{
+							target:target,
+							hitman:hitman,
+							setTarget:(t)=>setTarget(t),
+							setHitman:(h)=>setHitman(h)
 						}}>
-							<OpponentContext.Provider value={{
-								target:target,
-								hitman:hitman,
-								setTarget:(t)=>setTarget(t),
-								setHitman:(h)=>setHitman(h)
-							}}>
-								<SocketWrapper>
-									<AnimationWrapper />
-									<RouteWrapper />
-								</SocketWrapper>
-							</OpponentContext.Provider>
-						</UserContext.Provider>
-					</ThemeProvider>
-			</BrowserRouter>
-		</StaticWrapper>
+							<SocketWrapper>
+								<AnimationWrapper />
+								<RouteWrapper />
+							</SocketWrapper>
+						</OpponentContext.Provider>
+					</UserContext.Provider>
+				</ThemeProvider>
+		</BrowserRouter>
 	);
 }
 

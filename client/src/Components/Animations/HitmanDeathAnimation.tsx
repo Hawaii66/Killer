@@ -2,6 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import React, { useContext, useEffect, useState } from 'react'
 import { DefaultTarget, OpponentContext } from '../../Contexts/OpponentContext';
 import { SocketContext } from '../../Contexts/SocketContext'
+import { StaticContext } from '../../Contexts/StaticContext';
 import { UserContext } from '../../Contexts/UserContext';
 import { ITarget } from '../../Interfaces/Opponent';
 
@@ -12,6 +13,7 @@ function HitmanDeathAnimation() {
     const {socket} = useContext(SocketContext);
     const {setTarget} = useContext(OpponentContext);
     const {user, setUser, getAccessToken} = useContext(UserContext);
+    const {api} = useContext(StaticContext);
 
     useEffect(()=>{
         if(socket === null) return;
@@ -38,7 +40,7 @@ function HitmanDeathAnimation() {
         });
 
         const token = await getAccessToken();
-        const deadUser = await fetch(`http://localhost:5000/users/${user.id}/all`,{
+        const deadUser = await fetch(`${api}/users/${user.id}/all`,{
             method:"GET",
             headers:{
                 "Content-Type":"application/json",

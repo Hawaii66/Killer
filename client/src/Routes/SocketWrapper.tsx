@@ -3,6 +3,7 @@ import { UserContext } from '../Contexts/UserContext'
 import io, { Socket } from "socket.io-client";
 import { SocketContext } from '../Contexts/SocketContext';
 import { CToSEvents, SToCEvents } from '../Interfaces/Socket';
+import { StaticContext } from '../Contexts/StaticContext';
 
 interface Props
 {
@@ -10,7 +11,8 @@ interface Props
 }
 
 function SocketWrapper({children}:Props) {
-	const [socket, setSocket] = useState<Socket<SToCEvents,CToSEvents>>(io("http://localhost:5000"));
+	const {api} = useContext(StaticContext);
+	const [socket, setSocket] = useState<Socket<SToCEvents,CToSEvents>>(io(api));
 	const [isConnected, setIsConnected] = useState(false);
 	const [stats, setStats] = useState({
 		alive:0,

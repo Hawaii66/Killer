@@ -4,6 +4,7 @@ import { LoginUser } from '../../../Utils/UserAuth'
 import { State } from '../../WiatForStart'
 import StyledTextField from '../StyledTextField'
 import {UserContext} from "../../../Contexts/UserContext";
+import { StaticContext } from '../../../Contexts/StaticContext'
 
 interface Props {
     setState:(s:State) => void
@@ -36,10 +37,11 @@ function Login({setState}:Props) {
 	const [password, setPassword] = useState("");
 	
 	const {setUser, setAccessToken, setRefreshToken} = useContext(UserContext);
+	const {api} = useContext(StaticContext);
 
 	const login = async () => {
-		const {refreshToken, accessToken, userID} = await LoginUser({email, password});
-		const userResponse = await fetch(`http://localhost:5000/users/${userID}/all`,{
+		const {refreshToken, accessToken, userID} = await LoginUser({email, password,api});
+		const userResponse = await fetch(`${api}/users/${userID}/all`,{
 			method:"GET",
 			headers:{
 				"Content-Type":"application/json",

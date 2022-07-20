@@ -1,7 +1,8 @@
 import { CircularProgress, Container, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { BrowserRouter, Link, Route, Routes, useNavigate } from 'react-router-dom'
 import TargetDeathAnimation from '../Components/Animations/TargetDeathAnimation';
+import { StaticContext } from '../Contexts/StaticContext';
 import { useDeadline } from '../Hooks/useDeadline';
 import HitmanChat from './Chat/HitmanChat';
 import TargetChat from './Chat/TargetChat';
@@ -19,9 +20,10 @@ function RouteWrapper() {
 	const navigate = useNavigate();
 
 	const setMode = (mode:HomeRoutes) => _setMode(mode);
+	const {api} = useContext(StaticContext);
 
 	const fetchDeadline = async () => {
-		const result = await fetch("http://localhost:5000/default/deadline",{
+		const result = await fetch(`${api}/default/deadline`,{
 			method:"GET",
 			headers:{
 				"Content-Type":"application/json"

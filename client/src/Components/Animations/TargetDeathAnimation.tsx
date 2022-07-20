@@ -2,11 +2,13 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import React, { useContext, useEffect, useState } from 'react'
 import { SocketContext } from '../../Contexts/SocketContext'
 import { UserContext } from '../../Contexts/UserContext';
+import { StaticContext } from '../../Contexts/StaticContext';
 
 function TargetDeathAnimation() {
     const [active, setActive] = useState(false);
     const {socket} = useContext(SocketContext);
     const {user, setUser, getAccessToken} = useContext(UserContext);
+    const {api} = useContext(StaticContext);
 
     useEffect(()=>{
         if(socket === null) return;
@@ -24,7 +26,7 @@ function TargetDeathAnimation() {
         });
 
         const token = await getAccessToken();
-        const deadUser = await fetch(`http://localhost:5000/users/${user.id}/all`,{
+        const deadUser = await fetch(`${api}/users/${user.id}/all`,{
             method:"GET",
             headers:{
                 "Content-Type":"application/json",

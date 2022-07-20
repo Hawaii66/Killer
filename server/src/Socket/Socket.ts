@@ -26,12 +26,21 @@ const GetUserID = (id:string) => {
 }
 
 export const SocketRoutes = (io:Server<CToSEvents, SToCEvents, DefaultEventsMap, any>) => {
+    sockets = [];
+    console.log("Reset Sockets");
+
     io.on("connection", socket => {
         socket.on("join", async data => {
-            sockets.push({
-                socket,
-                userID:data.userID
-            });
+            if(sockets.every(socket=>{
+                return socket.userID !== data.userID
+            }))
+            {
+                sockets.push({
+                    socket,
+                    userID:data.userID
+                });
+            }
+            
 
             const stats = await GetAlive();
 
@@ -73,9 +82,10 @@ export const SocketRoutes = (io:Server<CToSEvents, SToCEvents, DefaultEventsMap,
 }
 
 export const GetSocket = (userID:string):UserSocket|null => {
-    sockets.forEach(user => {
-        if(user.userID === userID) return user;
-    });
+    for(var i = 0; i < sockets.length; i ++)
+    {
+        if(sockets[i].userID === userID) return sockets[i];
+    }
 
     return null;
 }

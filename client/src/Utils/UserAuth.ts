@@ -1,12 +1,12 @@
 import { KillerType, User } from "../Interfaces/User";
 
-export async function LoginUser({email,password}:{email:string,password:string}):Promise<{
+export async function LoginUser({email,password,api}:{email:string,password:string,api:string}):Promise<{
     refreshToken:string,
     accessToken:string,
     userID:string
 }>
 {
-    const loginResponse = await fetch("http://localhost:5000/auth/login",{
+    const loginResponse = await fetch(`${api}/auth/login`,{
         method:"POST",
         headers:{
             "Content-Type":"application/json"
@@ -42,13 +42,13 @@ export interface AuthUser
     year:number
 }
 
-export async function SignUpUser(signUpUser:AuthUser):Promise<{
+export async function SignUpUser({signUpUser,api}:{signUpUser:AuthUser,api:string}):Promise<{
     user:User,
     refreshToken:string,
     accessToken:string
 }>
 {
-    const createResponse = await fetch(`http://localhost:5000/auth/create`,{
+    const createResponse = await fetch(`${api}/auth/create`,{
         method:"POST",
         headers:{
             "Content-Type":"application/json"
@@ -69,7 +69,8 @@ export async function SignUpUser(signUpUser:AuthUser):Promise<{
 
     const {accessToken, refreshToken} = await LoginUser({
         email:user.email,
-        password:signUpUser.password
+        password:signUpUser.password,
+        api
     });
 
     return {user,accessToken,refreshToken};

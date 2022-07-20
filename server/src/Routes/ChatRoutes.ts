@@ -52,7 +52,7 @@ router.post("/add", AuthUser, async (req:AuthedRequest, res:Response) => {
     const message = await AddChat(hitman, target, isHitman, text);
 
     const otherUserSocket = GetSocket(isHitman ? target : hitman);
-    if(otherUserSocket === null) return;
+    if(otherUserSocket === null) return res.sendStatus(200);
 
     otherUserSocket.socket.emit("chat", message);
     res.sendStatus(200);

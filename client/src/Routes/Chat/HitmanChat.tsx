@@ -11,6 +11,7 @@ import { width } from '@mui/system';
 import ChatMessage from '../../Components/Chat/ChatMessage';
 import { SocketContext } from '../../Contexts/SocketContext';
 import { Chat } from '../../Interfaces/Chat';
+import { StaticContext } from '../../Contexts/StaticContext';
 
 
 function HitmanChat() {
@@ -28,6 +29,7 @@ function HitmanChat() {
 
     const navigate = useNavigate();
     const {socket} = useContext(SocketContext);
+    const {api} = useContext(StaticContext);
     
     const scrollRef = useRef<HTMLLIElement>(null);
 
@@ -47,7 +49,9 @@ function HitmanChat() {
         if(socket === null) return;
 
         socket.on("chat", data => {
+            console.log("Chat message received");
             setChat(prev => {
+                if(prev.messages.every(message=>message.id === data.id)) return prev;
                 return ({
                     hitman:prev.hitman,
                     target:prev.target,
@@ -56,14 +60,26 @@ function HitmanChat() {
             })
             scrollToBottom()
         })
+
+        return(()=>{
+            if(socket === null) return;
+            socket.removeListener("chat")
+        })
     },[]);
 
     useEffect(()=>{
         getChats()
     },[]);
 
+    useEffect(()=>{
+		if(user.id === "")
+		{
+			navigate("/login");
+		}
+	},[user]);
+
     const getChats = async () => {
-        const conversationResponse = await fetch(`http://localhost:5000/chat/get`,{
+        const conversationResponse = await fetch(`${api}/chat/get`,{
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
@@ -97,7 +113,7 @@ function HitmanChat() {
         setText("");
         scrollToBottom()
 
-        await fetch(`http://localhost:5000/chat/add`,{
+        await fetch(`${api}/chat/add`,{
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
